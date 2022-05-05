@@ -12,6 +12,7 @@ object juego{
 		game.addVisual(cactus)
 		game.addVisual(dino)
 		game.addVisual(reloj)
+		game.addVisual(pepita)
 	
 		keyboard.space().onPressDo{ self.jugar()}
 		
@@ -23,6 +24,7 @@ object juego{
 		dino.iniciar()
 		reloj.iniciar()
 		cactus.iniciar()
+		pepita.iniciar()
 	}
 	
 	method jugar(){
@@ -40,6 +42,7 @@ object juego{
 		cactus.detener()
 		reloj.detener()
 		dino.morir()
+		pepita.detener()
 	}
 	
 }
@@ -72,11 +75,11 @@ object reloj {
 
 object cactus {
 	 
-	const posicionInicial = game.at(game.width()-1,suelo.position().y())
+	const posicionInicial = game.at(game.width(),suelo.position().y())
 	var position = posicionInicial
 
 	method image() = "cactus.png"
-	method position() = position
+	method position() = position	
 	
 	method iniciar(){
 		position = posicionInicial
@@ -85,7 +88,7 @@ object cactus {
 	
 	method mover(){
 		position = position.left(1)
-		if (position.x() == -1)
+		if (position.x() == 0)
 			position = posicionInicial
 	}
 	
@@ -95,6 +98,33 @@ object cactus {
     method detener(){
 		game.removeTickEvent("moverCactus")
 	}
+}
+
+object pepita{
+	const posicionInicial = game.at(game.width()-3 ,suelo.position().y() + 1)
+	var position = posicionInicial
+
+	method image() = "pepita.png"
+	method position() = position
+	
+	method iniciar(){
+		position = posicionInicial
+		game.onTick(velocidad,"moverPepita",{self.mover()})
+	}
+	
+	method mover(){
+		position = position.left(1)
+		if (position.x() == -3)
+			position = posicionInicial
+	}
+	
+	method chocar(){
+		juego.terminar()
+	}
+    method detener(){
+		game.removeTickEvent("moverPepita")
+	}
+	
 }
 
 object suelo{
@@ -115,7 +145,7 @@ object dino {
 	method saltar(){
 		if(position.y() == suelo.position().y()) {
 			self.subir()
-			game.schedule(velocidad*3,{self.bajar()})
+			game.schedule(velocidad*2,{self.bajar()})
 		}
 	}
 	
